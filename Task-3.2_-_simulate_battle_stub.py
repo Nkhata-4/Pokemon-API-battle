@@ -14,6 +14,7 @@ class Pokemon:
     """
 
     def __init__(self, name):
+        self.name = name
         """
         Initialise a Pokemon by fetching its data from the API and calculating its stats.
 
@@ -22,17 +23,25 @@ class Pokemon:
         """
         # TODO: Store the Pokemon's name (lowercase)
 
+
         # TODO: Fetch Pokemon data from PokeAPI
         # - Create the URL: f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
         # - Make GET request
         # - Check response status code (raise error if not 200)
         # - Store the JSON data
-
+        url = f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
+        response = httpx.get(url)
+        if response.status_code == 200:
+            posts = response.json()
+            data = json.dumps(posts, indent=4)
+            print(data)
+        else:
+            print("Get request was unsuccessful")
         # TODO: Calculate and store stats
         # - Use _calculate_stat() for attack, defense, speed
         # - Use _calculate_hp() for max HP
         # - Store stats in a dictionary
-        # - Set current_hp = max_hp
+        # - Set current_hp = max_hp        
 
         pass
 
