@@ -4,7 +4,7 @@ Exercise 3.2: Simulate a Turn-Based Battle (Class-Based)
 In this exercise, you will create a Pokemon class and use it to simulate battles.
 This demonstrates object-oriented programming principles: encapsulation, methods, and clear responsibilities.
 """
-
+import json
 import httpx
 
 
@@ -41,8 +41,11 @@ class Pokemon:
         # - Use _calculate_stat() for attack, defense, speed
         # - Use _calculate_hp() for max HP
         # - Store stats in a dictionary
-        # - Set current_hp = max_hp        
-
+        # - Set current_hp = max_hp    
+        for stat, value in data:
+            print(f"   {data[-2].capitalize()}: {value}")
+        
+        
         pass
 
     def _calculate_stat(self, base_stat, level=50, iv=15, ev=85):
@@ -131,7 +134,7 @@ class Pokemon:
         """
         # TODO: Return a string like "Pikachu (HP: 95/120)"
         pass
-
+pokemon1_name = Pokemon("Pikachu")
 
 def simulate_battle(pokemon1_name, pokemon2_name):
     """
