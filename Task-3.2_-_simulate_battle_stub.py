@@ -32,8 +32,7 @@ class Pokemon:
         url = f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
         response = httpx.get(url)
         if response.status_code == 200:
-            posts = response.json()
-            data = json.dumps(posts, indent=4)
+            data = response.json()
             print(data)
         else:
             print("Get request was unsuccessful")
@@ -43,7 +42,7 @@ class Pokemon:
         # - Store stats in a dictionary
         # - Set current_hp = max_hp    
         for stat, value in data:
-            print(f"   {data[-2].capitalize()}: {value}")
+            print(f"")
         
         
         pass
@@ -64,7 +63,12 @@ class Pokemon:
         """
         # TODO: Implement the stat calculation formula
         # Formula: int(((2 * base_stat + iv + (ev / 4)) * level / 100) + 5)
-        pass
+        self.base_stat = base_stat
+        self.level = level
+        self.iv = iv
+        self.ev = ev
+        stat = int(((2 * self.base_stat + self.iv + (self.ev / 4)) * self.level / 100) + 5)
+        return stat
 
     def _calculate_hp(self, base_stat, level=50, iv=15, ev=85):
         """
@@ -82,6 +86,11 @@ class Pokemon:
         """
         # TODO: Implement the HP calculation formula
         # Formula: int(((2 * base_stat + iv + (ev / 4)) * level / 100) + level + 10)
+        self.base_stat = base_stat
+        self.level = level
+        self.iv = iv
+        self.ev = ev
+        current_hp = int(((2 * self.base_stat + self.iv + (self.ev / 4)) * self.level / 100) + self.level + 10)
         pass
 
     def attack(self, defender):
@@ -97,9 +106,12 @@ class Pokemon:
         # TODO: Calculate damage using the damage formula
         # Formula: int((((2 * 50 * 0.4 + 2) * self.stats['attack'] * 60) / (defender.stats['defense'] * 50)) + 2)
         # Where 50 is level and 60 is base_power
+        damage = int((((2 * 50 * 0.4 + 2) * self.stats['attack'] * 60) / (defender.stats['defense'] * 50)) + 2)
 
         # TODO: Make the defender take damage
         # Call defender.take_damage(damage)
+        defender.take_damage(damage)
+        return damage
 
         # TODO: Return the damage amount
         pass
@@ -122,6 +134,11 @@ class Pokemon:
         Returns:
             bool: True if fainted, False otherwise
         """
+        if current_hp <= 0:
+            return True
+        else:
+            return False
+        
         # TODO: Return True if current_hp <= 0, False otherwise
         pass
 
@@ -133,9 +150,10 @@ class Pokemon:
             str: A nice display of the Pokemon's name and HP
         """
         # TODO: Return a string like "Pikachu (HP: 95/120)"
+        return f"{self.name} (HP: {current_hp}/{max_hp})"
         pass
 pokemon1_name = Pokemon("Pikachu")
-
+pokemon2_name = Pokemon("Bulbasaur")
 def simulate_battle(pokemon1_name, pokemon2_name):
     """
     Simulate a turn-based battle between two Pokemon.
