@@ -30,10 +30,10 @@ class Pokemon:
         # - Check response status code (raise error if not 200)
         # - Store the JSON data
         url = f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
+        stat_data = []
         response = httpx.get(url)
         if response.status_code == 200:
             data = response.json()
-            print(data)
         else:
             print("Get request was unsuccessful")
         # TODO: Calculate and store stats
@@ -41,13 +41,37 @@ class Pokemon:
         # - Use _calculate_hp() for max HP
         # - Store stats in a dictionary
         # - Set current_hp = max_hp    
-        for stat, value in data:
-            print(f"")
-        
+        stat_data = data['stats']
+        print(stat_data)
+        for item in stat_data:
+            if item['stat']['name'] == "hp":
+                max_hp = item['base_stat']
+            elif item['stat']['name'] == "attack":
+                attack = item['base_stat']
+            elif item['stat']['name'] == "defense":
+                defense = item['base_stat']
+            elif item['stat']['name'] == "special-attack":
+                special_attack = item['base_stat']
+            elif item['stat']['name'] == "special-defense":
+                special_defense = item['base_stat']
+            elif item['stat']['name'] == "speed":
+                speed = item['base_stat']
+            else:
+                print("error")
+            
+            print(f"{self.name} has base stat: {item['stat']['name']} = {item['base_stat']}")
+        current_hp = max_hp
+        print(max_hp)
+        print(attack)
+        print(defense)
+        print(special_attack)
+        print(special_defense)
+        print(speed)
+
         
         pass
 
-    def _calculate_stat(self, base_stat, level=50, iv=15, ev=85):
+    def _calculate_stat(self, attack, defense, speed, level=50, iv=15, ev=85):
         """
         Calculate a Pokemon's stat at a given level.
         Helper method (note the underscore prefix).
@@ -63,14 +87,19 @@ class Pokemon:
         """
         # TODO: Implement the stat calculation formula
         # Formula: int(((2 * base_stat + iv + (ev / 4)) * level / 100) + 5)
-        self.base_stat = base_stat
+        self.attack = attack
+        self.defense = defense
+        self.speed = speed
         self.level = level
         self.iv = iv
         self.ev = ev
-        stat = int(((2 * self.base_stat + self.iv + (self.ev / 4)) * self.level / 100) + 5)
-        return stat
+        attack = int(((2 * self.attack + self.iv + (self.ev / 4)) * self.level / 100) + 5)
+        defense = int(((2 * self.defense + self.iv + (self.ev / 4)) * self.level / 100) + 5)
+        speed = int(((2 * self.speed + self.iv + (self.ev / 4)) * self.level / 100) + 5)
+        return f"{self.name} stats: attack={attack}, defense={defense}, speed={speed}"
 
-    def _calculate_hp(self, base_stat, level=50, iv=15, ev=85):
+
+    def _calculate_hp(self, current_hp, level=50, iv=15, ev=85):
         """
         Calculate a Pokemon's HP at a given level.
         HP uses a different formula than other stats.
@@ -86,12 +115,12 @@ class Pokemon:
         """
         # TODO: Implement the HP calculation formula
         # Formula: int(((2 * base_stat + iv + (ev / 4)) * level / 100) + level + 10)
-        self.base_stat = base_stat
+        self.current_hp = current_hp
         self.level = level
         self.iv = iv
         self.ev = ev
-        current_hp = int(((2 * self.base_stat + self.iv + (self.ev / 4)) * self.level / 100) + self.level + 10)
-        pass
+        current_hp = int(((2 * self.current_hp + self.iv + (self.ev / 4)) * self.level / 100) + self.level + 10)
+        return current_hp
 
     def attack(self, defender):
         """
@@ -114,7 +143,6 @@ class Pokemon:
         return damage
 
         # TODO: Return the damage amount
-        pass
 
     def take_damage(self, amount):
         """
@@ -123,6 +151,10 @@ class Pokemon:
         Args:
             amount (int): The damage to take
         """
+        damage = int((((2 * 50 * 0.4 + 2) * defender.stats['attack'] * 60) / (self.stats['defense'] * 50)) + 2)
+        current_hp = current_hp - damage
+        if current_hp <= 0:
+            return f"{self.name} has fainted"
         # TODO: Reduce current_hp by amount
         # Make sure HP doesn't go below 0
         pass
@@ -135,12 +167,12 @@ class Pokemon:
             bool: True if fainted, False otherwise
         """
         if current_hp <= 0:
-            return True
+            verdict = True
         else:
-            return False
+            verdict = False
+        return verdict
         
         # TODO: Return True if current_hp <= 0, False otherwise
-        pass
 
     def __str__(self):
         """
@@ -151,9 +183,8 @@ class Pokemon:
         """
         # TODO: Return a string like "Pikachu (HP: 95/120)"
         return f"{self.name} (HP: {current_hp}/{max_hp})"
-        pass
-pokemon1_name = Pokemon("Pikachu")
-pokemon2_name = Pokemon("Bulbasaur")
+
+
 def simulate_battle(pokemon1_name, pokemon2_name):
     """
     Simulate a turn-based battle between two Pokemon.
@@ -166,6 +197,7 @@ def simulate_battle(pokemon1_name, pokemon2_name):
 
     # TODO: Display battle start message
     # Show both Pokemon names and initial HP
+    print(f"{pokemon1_name}, HP:{max_hp}")
 
     # TODO: Determine who attacks first based on speed
     # The Pokemon with higher speed goes first
