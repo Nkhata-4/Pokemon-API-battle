@@ -41,13 +41,20 @@ class Pokemon:
         # - Use _calculate_hp() for max HP
         # - Store stats in a dictionary
         # - Set current_hp = max_hp    
+        pokemon1_name = {}
+        pokemon2_name = {}
         stat_data = data['stats']
         print(stat_data)
         for item in stat_data:
             if item['stat']['name'] == "hp":
                 max_hp = item['base_stat']
+                pokemon1_name.update({'hp': max_hp})
+                pokemon2_name.update({'hp': max_hp})
+                print(pokemon1_name)
+                print(pokemon2_name)
             elif item['stat']['name'] == "attack":
                 attack = item['base_stat']
+
             elif item['stat']['name'] == "defense":
                 defense = item['base_stat']
             elif item['stat']['name'] == "special-attack":
@@ -58,9 +65,9 @@ class Pokemon:
                 speed = item['base_stat']
             else:
                 print("error")
-            
             print(f"{self.name} has base stat: {item['stat']['name']} = {item['base_stat']}")
-        current_hp = max_hp
+        current_hp == int(max_hp)
+        
         print(max_hp)
         print(attack)
         print(defense)
@@ -194,14 +201,22 @@ def simulate_battle(pokemon1_name, pokemon2_name):
         pokemon2_name (str): Name of the second Pokemon
     """
     # TODO: Create two Pokemon objects
+    pokemon1 = Pokemon(pokemon1_name)
+    pokemon2 = Pokemon(pokemon2_name)
 
     # TODO: Display battle start message
     # Show both Pokemon names and initial HP
-    print(f"{pokemon1_name}, HP:{max_hp}")
+    print(f"{pokemon1}, HP:{pokemon1.stats['hp']}")
+    print(f"{pokemon2_name}, HP:{max_hp}")
 
     # TODO: Determine who attacks first based on speed
     # The Pokemon with higher speed goes first
     # Hint: Compare pokemon1.stats['speed'] with pokemon2.stats['speed']
+    if pokemon1_name.stats['speed'] >= pokemon2_name.stats['speed']:
+        print(f"{pokemon1_name} attacks first!")
+        defender = pokemon2_name
+    else:
+        print("second error")
 
     # TODO: Battle loop
     # - Keep track of round number
