@@ -106,7 +106,7 @@ class Pokemon:
         return f"{self.name} stats: attack={attack}, defense={defense}, speed={speed}"
 
 
-    def _calculate_hp(self, current_hp, level=50, iv=15, ev=85):
+    def _calculate_hp(self, base_stat, level=50, iv=15, ev=85):
         """
         Calculate a Pokemon's HP at a given level.
         HP uses a different formula than other stats.
@@ -122,12 +122,12 @@ class Pokemon:
         """
         # TODO: Implement the HP calculation formula
         # Formula: int(((2 * base_stat + iv + (ev / 4)) * level / 100) + level + 10)
-        self.current_hp = current_hp
+        self.current_hp = base_stat
         self.level = level
         self.iv = iv
         self.ev = ev
         self.current_hp = int(((2 * self.current_hp + self.iv + (self.ev / 4)) * self.level / 100) + self.level + 10)
-        return current_hp
+        return self.current_hp
 
     def attack(self, defender):
         """
@@ -189,7 +189,8 @@ class Pokemon:
             str: A nice display of the Pokemon's name and HP
         """
         # TODO: Return a string like "Pikachu (HP: 95/120)"
-        return f"{self.name} (HP: {self._calculate_hp(self.current_hp)}/{self.max_hp})"
+        self.max_hp = self._calculate_hp(self.max_hp)
+        return f"{self.name} (HP: {self.current_hp}/{self.max_hp})"
 
 
 def simulate_battle(pokemon1_name, pokemon2_name):
