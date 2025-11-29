@@ -126,7 +126,7 @@ class Pokemon:
         self.level = level
         self.iv = iv
         self.ev = ev
-        current_hp = int(((2 * self.current_hp + self.iv + (self.ev / 4)) * self.level / 100) + self.level + 10)
+        self.current_hp = int(((2 * self.current_hp + self.iv + (self.ev / 4)) * self.level / 100) + self.level + 10)
         return current_hp
 
     def attack(self, defender):
@@ -204,9 +204,13 @@ def simulate_battle(pokemon1_name, pokemon2_name):
     pokemon1 = Pokemon(pokemon1_name)
     pokemon2 = Pokemon(pokemon2_name)
 
+    pokemon1.hp = pokemon1._calculate_hp(pokemon1.max_hp)
+    pokemon2.max_hp = pokemon2._calculate_hp(pokemon2.max_hp)
+
+
     # TODO: Display battle start message
     # Show both Pokemon names and initial HP
-    print(f"{pokemon1.name}, HP: {pokemon1.max_hp}")
+    print(f"{pokemon1.name}, HP: {pokemon1.hp}")
     print(f"{pokemon2.name}, HP: {pokemon2.max_hp}")
 
     # TODO: Determine who attacks first based on speed
@@ -214,11 +218,11 @@ def simulate_battle(pokemon1_name, pokemon2_name):
     # Hint: Compare pokemon1.stats['speed'] with pokemon2.stats['speed']
     if pokemon1.speed >= pokemon2.speed:
         print(f"{pokemon1.name} attacks first!")
-        defender = pokemon2
+        print(pokemon1)
+        print(pokemon2)
     else:
         print(f"{pokemon2.name} attacks first")
         defender = pokemon1
-
     # TODO: Battle loop
     # - Keep track of round number
     # - While neither Pokemon is fainted:
@@ -229,13 +233,9 @@ def simulate_battle(pokemon1_name, pokemon2_name):
     #   - If not, swap attacker and defender
     #   - Increment round number
     i = 1
-    while pokemon1.is_fainted() == False and pokemon2.is_fainted() == False and i < 8:
-        if pokemon1.speed >= pokemon2.speed:
-            print(f"{pokemon1.name} attacks first!")
-            defender = pokemon2    
-        else:
-            print(f"{pokemon2.name} attacks first")
-            defender = pokemon1
+    while pokemon1.is_fainted() == False and pokemon2.is_fainted() == False and i < 5:
+        print(f"This is round {i}!")
+        pokemon1.attack(pokemon2)
         
         i = i + 1
     
