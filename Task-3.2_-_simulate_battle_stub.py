@@ -230,13 +230,13 @@ def simulate_battle(pokemon1_name, pokemon2_name):
     #   - Increment round number
     i = 1
     while pokemon1.is_fainted() == False and pokemon2.is_fainted() == False and i < 8:
-        print(f"Round {i}!")
-        pokemon1.attack(defender)
-        print(pokemon1)
-        print(pokemon2)
-        if pokemon2.is_fainted() == True:
-            print(f"{pokemon2.name} has fainted!")
-
+        if pokemon1.speed >= pokemon2.speed:
+            print(f"{pokemon1.name} attacks first!")
+            defender = pokemon2    
+        else:
+            print(f"{pokemon2.name} attacks first")
+            defender = pokemon1
+        
         i = i + 1
     
     print("The match has ended")
