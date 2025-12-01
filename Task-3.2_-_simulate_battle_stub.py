@@ -270,5 +270,5 @@ if __name__ == "__main__":
     simulate_battle("pikachu", "bulbasaur")
 
     # Uncomment to test other battles:
-    # simulate_battle("charmander", "squirtle")
-    # simulate_battle("eevee", "jigglypuff")
+    simulate_battle("Pidgey", "Rattata")
+    simulate_battle("eevee", "jigglypuff")
