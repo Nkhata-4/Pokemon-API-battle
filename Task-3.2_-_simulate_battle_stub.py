@@ -78,7 +78,7 @@ class Pokemon:
         
         pass
 
-    def _calculate_stat(self, attack, defense, speed, level=50, iv=15, ev=85):
+    def _calculate_stat(self, base_stat, level=50, iv=15, ev=85):
         """
         Calculate a Pokemon's stat at a given level.
         Helper method (note the underscore prefix).
@@ -94,16 +94,13 @@ class Pokemon:
         """
         # TODO: Implement the stat calculation formula
         # Formula: int(((2 * base_stat + iv + (ev / 4)) * level / 100) + 5)
-        self.attack = attack
-        self.defense = defense
-        self.speed = speed
+        self.base_stat = base_stat
         self.level = level
         self.iv = iv
         self.ev = ev
-        attack = int(((2 * self.attack + self.iv + (self.ev / 4)) * self.level / 100) + 5)
-        defense = int(((2 * self.defense + self.iv + (self.ev / 4)) * self.level / 100) + 5)
-        speed = int(((2 * self.speed + self.iv + (self.ev / 4)) * self.level / 100) + 5)
-        return f"{self.name} stats: attack={attack}, defense={defense}, speed={speed}"
+        base_stat = int(((2 * self.base_stat + self.iv + (self.ev / 4)) * self.level / 100) + 5)
+        
+        return base_stat
 
 
     def _calculate_hp(self, base_stat, level=50, iv=15, ev=85):
@@ -142,7 +139,7 @@ class Pokemon:
         # TODO: Calculate damage using the damage formula
         # Formula: int((((2 * 50 * 0.4 + 2) * self.stats['attack'] * 60) / (defender.stats['defense'] * 50)) + 2)
         # Where 50 is level and 60 is base_power
-        damage = int((((2 * 50 * 0.4 + 2) * self.stats['attack'] * 60) / (defender.stats['defense'] * 50)) + 2)
+        damage = int((((2 * 50 * 0.4 + 2) * self.attack * 60) / (defender.defense * 50)) + 2)
 
         # TODO: Make the defender take damage
         # Call defender.take_damage(damage)
@@ -158,13 +155,13 @@ class Pokemon:
         Args:
             amount (int): The damage to take
         """
-        damage = int((((2 * 50 * 0.4 + 2) * defender.stats['attack'] * 60) / (self.stats['defense'] * 50)) + 2)
-        self.current_hp = self.current_hp - damage
+        self.amount = amount
+        self.current_hp = self.current_hp - self.amount
         if self.current_hp <= 0:
-            return f"{self.name} has fainted"
+            print(f"{self.name} has fainted")
+        return self.current_hp
         # TODO: Reduce current_hp by amount
         # Make sure HP doesn't go below 0
-        return amount
 
     def is_fainted(self):
         """
@@ -189,7 +186,6 @@ class Pokemon:
             str: A nice display of the Pokemon's name and HP
         """
         # TODO: Return a string like "Pikachu (HP: 95/120)"
-        self.max_hp = self._calculate_hp(self.max_hp)
         return f"{self.name} (HP: {self.current_hp}/{self.max_hp})"
 
 
@@ -205,25 +201,38 @@ def simulate_battle(pokemon1_name, pokemon2_name):
     pokemon1 = Pokemon(pokemon1_name)
     pokemon2 = Pokemon(pokemon2_name)
 
-    pokemon1.hp = pokemon1._calculate_hp(pokemon1.max_hp)
+    pokemon1.max_hp = pokemon1._calculate_hp(pokemon1.max_hp)
     pokemon2.max_hp = pokemon2._calculate_hp(pokemon2.max_hp)
+
+    pokemon1.attack = pokemon1._calculate_stat(pokemon1.attack)
+    pokemon2.attack = pokemon2._calculate_stat(pokemon2.attack)
+
+    pokemon1.defense = pokemon1._calculate_stat(pokemon1.defense)
+    pokemon2.defense = pokemon2._calculate_stat(pokemon2.defense)
+
+    pokemon1.speed = pokemon1._calculate_stat(pokemon1.speed)
+    pokemon2.speed = pokemon2._calculate_stat(pokemon2.speed)
+    
 
 
     # TODO: Display battle start message
     # Show both Pokemon names and initial HP
-    print(f"{pokemon1.name}, HP: {pokemon1.hp}")
+    print(f"{pokemon1.name}, HP: {pokemon1.max_hp}")
     print(f"{pokemon2.name}, HP: {pokemon2.max_hp}")
 
     # TODO: Determine who attacks first based on speed
     # The Pokemon with higher speed goes first
     # Hint: Compare pokemon1.stats['speed'] with pokemon2.stats['speed']
     if pokemon1.speed >= pokemon2.speed:
-        print(f"{pokemon1.name} attacks first!")
-        print(pokemon1)
-        print(pokemon2)
+        winner = pokemon1
+        defender = pokemon2
+        print(f"{winner.name} attacks first!")
     else:
-        print(f"{pokemon2.name} attacks first")
+        winner = pokemon2
         defender = pokemon1
+        print(f"{winner.name} attacks first")
+
+
     # TODO: Battle loop
     # - Keep track of round number
     # - While neither Pokemon is fainted:
@@ -236,7 +245,8 @@ def simulate_battle(pokemon1_name, pokemon2_name):
     i = 1
     while pokemon1.is_fainted() == False and pokemon2.is_fainted() == False and i < 5:
         print(f"This is round {i}!")
-        pokemon1.attack(pokemon2)
+        winner.attack(defender)
+        print(winner)
         
         i = i + 1
     
