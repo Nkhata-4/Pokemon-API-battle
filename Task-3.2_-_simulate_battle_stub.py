@@ -6,7 +6,7 @@ This demonstrates object-oriented programming principles: encapsulation, methods
 """
 import json
 import httpx
-
+# Yanjani Nkhata 201930814
 
 class Pokemon:
     """
