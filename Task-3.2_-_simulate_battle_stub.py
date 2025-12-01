@@ -42,7 +42,6 @@ class Pokemon:
         # - Store stats in a dictionary
         # - Set current_hp = max_hp    
         stat_data = data['stats']
-        print(stat_data)
         for item in stat_data:
             if item['stat']['name'] == "hp":
                 max_hp = item['base_stat']
@@ -58,7 +57,7 @@ class Pokemon:
                 speed = item['base_stat']
             else:
                 print("error")
-            print(f"{self.name} has base stat: {item['stat']['name']} = {item['base_stat']}")
+
         self.current_hp = max_hp
         self.max_hp = max_hp
         self.attack = attack
@@ -67,14 +66,7 @@ class Pokemon:
         self.special_defense = special_defense
         self.speed = speed
 
-        
-        print(max_hp)
-        print(attack)
-        print(defense)
-        print(special_attack)
-        print(special_defense)
-        print(speed)
-
+    
         
         pass
 
@@ -126,7 +118,7 @@ class Pokemon:
         self.current_hp = int(((2 * self.current_hp + self.iv + (self.ev / 4)) * self.level / 100) + self.level + 10)
         return self.current_hp
 
-    def attack(self, defender):
+    def deal_damage(self, defender):
         """
         Attack another Pokemon, dealing damage based on stats.
 
@@ -148,17 +140,18 @@ class Pokemon:
 
         # TODO: Return the damage amount
 
-    def take_damage(self, amount):
+    def take_damage(self, damage):
         """
         Reduce this Pokemon's HP by the damage amount.
 
         Args:
             amount (int): The damage to take
         """
-        self.amount = amount
+        self.amount = damage
         self.current_hp = self.current_hp - self.amount
         if self.current_hp <= 0:
             print(f"{self.name} has fainted")
+            self.current_hp = 0
         return self.current_hp
         # TODO: Reduce current_hp by amount
         # Make sure HP doesn't go below 0
@@ -217,6 +210,7 @@ def simulate_battle(pokemon1_name, pokemon2_name):
 
     # TODO: Display battle start message
     # Show both Pokemon names and initial HP
+    print(f"This is a fierce battle between {pokemon1.name} and {pokemon2.name}!")
     print(f"{pokemon1.name}, HP: {pokemon1.max_hp}")
     print(f"{pokemon2.name}, HP: {pokemon2.max_hp}")
 
@@ -243,13 +237,21 @@ def simulate_battle(pokemon1_name, pokemon2_name):
     #   - If not, swap attacker and defender
     #   - Increment round number
     i = 1
-    while pokemon1.is_fainted() == False and pokemon2.is_fainted() == False and i < 5:
+    while pokemon1.is_fainted() == False and pokemon2.is_fainted() == False:
         print(f"This is round {i}!")
-        winner.attack(defender)
-        print(winner)
-        
-        i = i + 1
-    
+        if i % 2 != 0:
+            print(f"{winner.name} is now attacking!")
+            winner.deal_damage(defender)
+            print(winner)
+            print(defender)
+            i = i + 1
+        else:
+            print(f"{defender.name} is now attacking!")
+            defender.deal_damage(winner)
+            print(defender)
+            print(winner)
+            i = i + 1
+            
     print("The match has ended")
     if pokemon1.is_fainted() == False:
         print(f"The winning pokemon is {pokemon1.name} with HP= {pokemon1.current_hp}!")
